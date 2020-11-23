@@ -2,37 +2,43 @@
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
+// Your JavaScript code goes here!
+// hide error modal
+const modal = document.getElementById('modal');
+modal.className = "hidden"
+
+
 let glyphStates = {
   "♡": "♥",
   "♥": "♡"
 };
 
-let colorStates = {
+let colorChange = {
   "red" : "",
   "": "red"
 };
 
-let articleHearts = document.querySelectorAll(".like");
+const hearts = document.querySelectorAll("ul > li > span")
+for(let heart of hearts){
+  heart.addEventListener('click', like);
+};
 
-function likeCallback(e) {
-  let heart = e.target;
-  mimicServerCall("bogusUrl")
-   //OR: mimicServerCall("bogusUrl", {forceFailure: true})
-    .then(function(serverMessage){
-       heart.innerText = glyphStates[heart.innerText];
-       heart.style.color = colorStates[heart.style.color];
-    })
-    .catch(function(error) {
-      // Basic
-      // alert("Something went wrong!");
-      // or....
-      document.getElementById("modal").className = "";
-    });
-}
+function like(e){
+  mimicServerCall("http://liverpoolfc.com")
+  .then(rsp => changeHeart(e))
+  .catch((error) => {
+    setTimeout(function(){
+      modal.className = ""
+    }, 5000)
 
-for (let glyph of articleHearts) {
-  glyph.addEventListener("click", likeCallback);
-}
+  });
+};
+
+function changeHeart(e){
+  heart = e.target;
+  heart.innerText = glyphStates[heart.innerText];
+  heart.style.color = colorChange[heart.style.color];
+};
 //------------------------------------------------------------------------------
 // Ignore after this point. Used only for demo purposes
 //------------------------------------------------------------------------------
